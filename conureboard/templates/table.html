@@ -1,0 +1,11 @@
+{% macro header(display_name, db_name) -%}
+  <a href="?sort_by={{ db_name }}&sort_order={%if request.args.get('sort_order') == 'asc'%}desc{% else %}asc{% endif %}">{{ display_name }}</a>
+
+  {% if request.args.get('sort_by') == db_name %}
+    {% if request.args.get('sort_order') == 'asc' %}
+      <span class="glyphicon glyphicon-arrow-up"></span>
+    {% else %}
+      <span class="glyphicon glyphicon-arrow-down"></span>
+    {% endif %}
+  {% endif %}  
+{%- endmacro %}
