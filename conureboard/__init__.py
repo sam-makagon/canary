@@ -1,3 +1,5 @@
-import os
+from flask import Flask
 
-from conureboard import view, model, database
+app = Flask(__name__)
+
+from conureboard import database, models, views, api
