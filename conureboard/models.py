@@ -53,10 +53,10 @@ class Event(Base):
     def __init__(self, parent_id, host, status, modify_date, message, arguments):
         self.parent_id = parent_id
         self.host = host
-        self.name = name
         self.status = status
         self.modify_date = modify_date
         self.message = message
+        self.arguments = arguments
 
     def __repr__(self):
         return '<Service %r, status %r, date %r>' % (self.id, self.status, self.modify_date)
