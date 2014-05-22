@@ -1,20 +1,21 @@
+import sys
 from flask import render_template, request
-from pprint import pprint
 
 from conureboard import app, models
 from conureboard.database import session, printquery
 from conureboard.paginate import get_page_info
 
 ITEMS_PER_PAGE = 50
-DEBUG = 1
+DEBUG = 0
 
 @app.route('/')
+@app.route('/conureboard/')
 def show_services():
   cur_page = get_page(request)
   offset = get_offset(cur_page)
 
   if DEBUG:
-    print "offset=%s, limit=%s" % (offset, ITEMS_PER_PAGE)
+    logmsg("offset=%s, limit=%s" % (offset, ITEMS_PER_PAGE))
 
   #base services query
   services = session.query(models.Service).\
@@ -42,17 +43,19 @@ def show_services():
   services = services.offset(offset).limit(ITEMS_PER_PAGE)
 
   if DEBUG:
-    print printquery(services)
+    logmsg(printquery(services))
 
   rowcount = session.query(models.Service.id).count()
   (page_num, total_pages) = get_page_info(rowcount, cur_page, ITEMS_PER_PAGE)
 
+  logmsg("rendering template")
   return render_template('services.html', rowcount=rowcount, items=services, statuses=models.Status, page_num=page_num,\
     total_pages=total_pages, request=request)
 
 
 
 @app.route('/services/<int:service_id>')
+@app.route('/conureboard/services/<int:service_id>')
 def show_events(service_id):
   cur_page = get_page(request)
   offset = get_offset(cur_page)
@@ -60,8 +63,8 @@ def show_events(service_id):
   (page_num, total_pages) = get_page_info(rowcount, cur_page, ITEMS_PER_PAGE)
 
   if DEBUG:
-    print "offset=%s, limit=%s, rowcount=%s, page_num=%s, total_pages=%s, search=%s" % (offset, ITEMS_PER_PAGE, rowcount, page_num,\
-      total_pages, request.args.get('search'))
+    logmsg("offset=%s, limit=%s, rowcount=%s, page_num=%s, total_pages=%s, search=%s" % (offset, ITEMS_PER_PAGE, rowcount, page_num,\
+      total_pages, request.args.get('search')))
 
   #base event query
   events = session.query(models.Event).\
@@ -81,8 +84,7 @@ def show_events(service_id):
   events = events.offset(offset).limit(ITEMS_PER_PAGE)
 
   if DEBUG:
-    print printquery(events)
-    #pprint (vars(events))
+    logmsg(printquery(events))
 
   return render_template('events.html', rowcount=rowcount, items=events, statuses=models.Status, page_num=page_num,\
    total_pages=total_pages, search=request.args.get('search'))
@@ -95,3 +97,6 @@ def get_page(request):
 
 def get_offset(cur_page):
   return (cur_page-1) * ITEMS_PER_PAGE
+
+def logmsg(msg):
+  print >> sys.stderr, msg
