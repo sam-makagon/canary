@@ -3,9 +3,8 @@ from flask import render_template, request
 
 from conureboard import app, models
 from conureboard.database import session, printquery
-from conureboard.paginate import get_page_info
+from conureboard.paginate import get_total_pages, get_offset, ITEMS_PER_PAGE
 
-ITEMS_PER_PAGE = 50
 DEBUG = 0
 
 @app.route('/')
@@ -46,11 +45,11 @@ def show_services():
     logmsg(printquery(services))
 
   rowcount = session.query(models.Service.id).count()
-  (page_num, total_pages) = get_page_info(rowcount, cur_page, ITEMS_PER_PAGE)
+  total_pages = get_total_pages(rowcount)
 
   logmsg("rendering template")
-  return render_template('services.html', rowcount=rowcount, items=services, statuses=models.Status, page_num=page_num,\
-    total_pages=total_pages, request=request)
+  return render_template('services.html', rowcount=rowcount, items=services, statuses=models.Status, \
+    total_pages=total_pages, cur_page=cur_page, offset=offset, request=request)
 
 
 
@@ -60,10 +59,10 @@ def show_events(service_id):
   cur_page = get_page(request)
   offset = get_offset(cur_page)
   rowcount = session.query(models.Event).filter(models.Event.parent_id == service_id).count()
-  (page_num, total_pages) = get_page_info(rowcount, cur_page, ITEMS_PER_PAGE)
+  total_pages = get_total_pages(rowcount)
 
   if DEBUG:
-    logmsg("offset=%s, limit=%s, rowcount=%s, page_num=%s, total_pages=%s, search=%s" % (offset, ITEMS_PER_PAGE, rowcount, page_num,\
+    logmsg("offset=%s, limit=%s, rowcount=%s, cur_page=%s, total_pages=%s, search=%s" % (offset, ITEMS_PER_PAGE, rowcount, cur_page, \
       total_pages, request.args.get('search')))
 
   #base event query
@@ -86,17 +85,21 @@ def show_events(service_id):
   if DEBUG:
     logmsg(printquery(events))
 
-  return render_template('events.html', rowcount=rowcount, items=events, statuses=models.Status, page_num=page_num,\
-   total_pages=total_pages, search=request.args.get('search'))
+  return render_template('events.html', rowcount=rowcount, items=events, statuses=models.Status, \
+   total_pages=total_pages, request=request, cur_page=cur_page, offset=offset)
 
 def get_page(request):
-  if request.args.get('page') != None:
-    return request.args.get('page')
+  page = request.args.get('page')
+  page_num = None
+  if page != None:
+    try:
+      page_num = int(page)
+    except ValueError:
+      page_num = 1
   else:
-    return 1
+    page_num = 1
 
-def get_offset(cur_page):
-  return (cur_page-1) * ITEMS_PER_PAGE
+  return page_num
 
 def logmsg(msg):
   print >> sys.stderr, msg

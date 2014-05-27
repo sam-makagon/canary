@@ -19,7 +19,7 @@
           </ul>
           -->
           <form class="navbar-form navbar-right">
-            <input name="search" type="text" class="form-control" placeholder="Search..." value="{{ search if search }}">
+            <input name="search" type="text" class="form-control" placeholder="Search..." value="{{ request.args.get('search') if request.args.get('search') }}">
           </form>
         </div>
       </div>
