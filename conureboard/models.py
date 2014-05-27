@@ -26,7 +26,7 @@ class Service(Base):
     message = Column(String(1000), index=True)
     arguments = Column(String(1000), index=True)
 
-    def __init__(self, name, host, status, modify_date, start_date, stop_date, message, arguments):
+    def __init__(self, name, host, status, modify_date=None, start_date=None, stop_date=None, message=None, arguments=None):
         self.name = name
         self.host = host
         self.status = status
@@ -50,7 +50,7 @@ class Event(Base):
     message = Column(String(1000), index=True)
     arguments = Column(String(1000), index=True)
 
-    def __init__(self, parent_id, host, status, modify_date, message, arguments):
+    def __init__(self, parent_id, host, status, modify_date=None, message=None, arguments=None):
         self.parent_id = parent_id
         self.host = host
         self.status = status
