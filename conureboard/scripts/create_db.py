@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import conureboard
 from conureboard.database import engine, session
 from conureboard.models import Base, Status

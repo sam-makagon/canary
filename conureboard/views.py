@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 from flask import render_template, request
 
@@ -102,4 +103,4 @@ def get_page(request):
   return page_num
 
 def logmsg(msg):
-  print >> sys.stderr, msg
+  print (msg, file=sys.stderr)
