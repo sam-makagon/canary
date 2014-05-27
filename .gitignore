@@ -1,3 +1,5 @@
 env
 conureboard/*.pyc
 .odbc.ini
+flask.log
+
