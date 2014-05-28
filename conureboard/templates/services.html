@@ -1,8 +1,10 @@
 {% import 'table.html' as table %}
+{% set process_length = 35 %}
+{% set message_length = 50 %}
 
 <!DOCTYPE html>
 <html lang="en">
-  {% include 'head.html' %}
+  {% include 'header-include.html' %}
   <body style>
   {% include 'header.html' %}
 
@@ -19,6 +21,7 @@
         <th>{{ table.header('Started', 'start_date') }}</th>
         <th>{{ table.header('Stopped', 'stop_date') }}</th>
         <th>{{ table.header('Message', 'message') }}</th>
+
         {% for item in items %}
           <tr>
             <td>
@@ -34,11 +37,11 @@
               {% endif %}
               </a>
             </td>
-            <td>{{ item.name }}</td>
+            <td>{{ table.truncate(item.name~' '~item.arguments, process_length, False, 'right') }}</td>
             <td>{{ item.host }}</td>
             <td>{{ item.start_date.strftime('%Y-%m-%d %H:%M:%S') if item.start_date and item.start_date != None}}</td>
             <td>{{ item.stop_date.strftime('%Y-%m-%d %H:%M:%S') if item.stop_date and item.stop_date != None }}</td>
-            <td>{{ item.message if item.message != None }}</td>
+            <td>{{ table.truncate(item.message, message_length, True, 'left') }}</td>
           </tr>
         {% endfor %}
         </table>
@@ -47,10 +50,6 @@
     </div>
 
 
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/static/js/bootstrap.min.js"></script>
+    {% include 'footer-include.html' %}
   </body>
 </html>
