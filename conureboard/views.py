@@ -4,18 +4,14 @@ from flask import render_template, request
 
 from conureboard import app, models
 from conureboard.database import session, printquery
-from conureboard.paginate import get_total_pages, get_offset, ITEMS_PER_PAGE
-
-DEBUG = 0
+from conureboard.paginate import get_total_pages, get_offset
+from conureboard.config import ITEMS_PER_PAGE, DEBUG
 
 @app.route('/')
 @app.route('/conureboard/')
 def show_services():
   cur_page = get_page(request)
   offset = get_offset(cur_page)
-
-  if DEBUG:
-    logmsg("offset=%s, limit=%s" % (offset, ITEMS_PER_PAGE))
 
   #base services query
   services = session.query(models.Service).\
@@ -33,7 +29,7 @@ def show_services():
     if request.args.get('sort_order') == 'desc':
       services = services.order_by(getattr(models.Service, request.args.get('sort_by')).desc())
     else:
-      services = services.order_by(models.Service.modify_date.desc())
+      services = services.order_by(getattr(models.Service, request.args.get('sort_by')).asc())
   else:
     #default sort
     services = services.order_by(models.Service.modify_date.desc())
@@ -42,16 +38,15 @@ def show_services():
   #apply offset and limit
   services = services.offset(offset).limit(ITEMS_PER_PAGE)
 
-  if DEBUG:
-    logmsg(printquery(services))
-
   rowcount = session.query(models.Service.id).count()
   total_pages = get_total_pages(rowcount)
 
-  logmsg("rendering template")
+  if DEBUG:
+    logmsg("offset=%s, limit=%s, total_pages=%s, rowcount=%s, ITEMS_PER_PAGE=%s" % (offset, ITEMS_PER_PAGE, total_pages, rowcount, ITEMS_PER_PAGE))
+    logmsg(printquery(services))
+
   return render_template('services.html', rowcount=rowcount, items=services, statuses=models.Status, \
     total_pages=total_pages, cur_page=cur_page, offset=offset, request=request)
-
 
 
 @app.route('/services/<int:service_id>')
@@ -71,14 +66,28 @@ def show_events(service_id):
             join(models.Service).\
             join(models.Status, models.Status.id == models.Event.status).\
             filter(models.Service.id == service_id).\
-            order_by(models.Event.modify_date.desc()).\
-            with_entities( models.Service.name, models.Status.description, models.Event.status, models.Event.modify_date,\
-              models.Event.message )
+            with_entities( models.Event.id, models.Service.name, models.Status.description, models.Event.status, models.Event.modify_date,\
+              models.Event.message, models.Service.host, models.Service.arguments )
   
   #apply search
   if request.args.get('search'):
     search_term = '%%%s%%' % request.args.get('search')
     events = events.filter(models.Event.message.like(search_term) )
+
+  #apply sort
+  sortObject = models.Event
+  if request.args.get('sort_by'):
+    if request.args.get('sort_by') == 'name':
+      #name is a special case, it's in models.Service
+      sortObject = models.Service
+
+    if request.args.get('sort_order') == 'desc':
+      events = events.order_by(getattr(sortObject, request.args.get('sort_by')).desc())
+    else:
+      events = events.order_by(getattr(sortObject, request.args.get('sort_by')).asc())
+  else:
+    #default sort
+    events = events.order_by(models.Event.modify_date.desc())
 
   #apply offset and limit
   events = events.offset(offset).limit(ITEMS_PER_PAGE)
@@ -88,6 +97,23 @@ def show_events(service_id):
 
   return render_template('events.html', rowcount=rowcount, items=events, statuses=models.Status, \
    total_pages=total_pages, request=request, cur_page=cur_page, offset=offset)
+
+
+@app.route('/detail/<int:event_id>')
+@app.route('/conureboard/detail/<int:event_id>')
+def show_detail(event_id):
+  #base event query
+  event = session.query(models.Event).\
+            join(models.Service).\
+            join(models.Status, models.Status.id == models.Event.status).\
+            filter(models.Event.id == event_id).\
+            with_entities( models.Service.name, models.Status.description, models.Event.status, models.Event.modify_date,\
+              models.Event.message, models.Service.host, models.Service.arguments )
+
+  if DEBUG:
+    logmsg(printquery(event))
+
+  return render_template('detail.html', items=event)
 
 def get_page(request):
   page = request.args.get('page')
