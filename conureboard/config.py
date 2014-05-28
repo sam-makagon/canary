@@ -1,3 +1,3 @@
-DB_ENGINE = 'sqllite:///app.db'
+DB_ENGINE = 'sqlite:///app.db'
 ITEMS_PER_PAGE = 50
 DEBUG = 1
