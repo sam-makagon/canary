@@ -1,5 +1,6 @@
 import os
 from ConfigParser import SafeConfigParser,NoOptionError
+basedir = os.path.abspath(os.path.dirname(__file__))
 parser = SafeConfigParser()
 parser.read('conureboard/conureboard.cfg')
 
@@ -7,7 +8,7 @@ parser.read('conureboard/conureboard.cfg')
 try:
   DB_ENGINE = parser.get('DEFAULT','DB_ENGINE')
 except NoOptionError:
-  DB_ENGINE = 'sqlite:///app.db'
+  DB_ENGINE = 'sqlite:///' + os.path.join(basedir, 'app.db')
 
 #how many items per page to display on service and events pages
 try:
