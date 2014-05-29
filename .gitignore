@@ -3,4 +3,4 @@ conureboard/*.pyc
 .odbc.ini
 flask.log
 conureboard/conureboard.cfg
-
+conureboard/app.db
