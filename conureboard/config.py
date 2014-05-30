@@ -2,7 +2,7 @@ import os
 from ConfigParser import SafeConfigParser,NoOptionError
 basedir = os.path.abspath(os.path.dirname(__file__))
 parser = SafeConfigParser()
-parser.read('conureboard/conureboard.cfg')
+parser.read(os.path.join(basedir, 'conureboard.cfg'))
 
 #SQLAlchemy database connection string
 try:
@@ -21,3 +21,4 @@ try:
   DEBUG = parser.get('DEFAULT','DEBUG')
 except NoOptionError:
   DEBUG = 0
+
