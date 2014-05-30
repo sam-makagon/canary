@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from conureboard.database import meta
 from sqlalchemy import MetaData
 
