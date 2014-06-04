@@ -1,6 +1,6 @@
 env
-conureboard/*.pyc
+canary/*.pyc
 .odbc.ini
 flask.log
-conureboard/conureboard.cfg
-conureboard/app.db
+canary/canary.cfg
+canary/app.db
