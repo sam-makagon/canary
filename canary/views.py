@@ -2,13 +2,13 @@ from __future__ import print_function
 import sys
 from flask import render_template, request
 
-from conureboard import app, models
-from conureboard.database import session, printquery
-from conureboard.paginate import get_total_pages, get_offset
-from conureboard.config import ITEMS_PER_PAGE, DEBUG
+from canary import app, models
+from canary.database import session, printquery
+from canary.paginate import get_total_pages, get_offset
+from canary.config import ITEMS_PER_PAGE, DEBUG
 
 @app.route('/')
-@app.route('/conureboard/')
+@app.route('/canary/')
 def show_services():
   cur_page = get_page(request)
   offset = get_offset(cur_page)
@@ -49,8 +49,8 @@ def show_services():
     total_pages=total_pages, cur_page=cur_page, offset=offset, request=request)
 
 
-@app.route('/services/<int:service_id>')
-@app.route('/conureboard/services/<int:service_id>')
+@app.route('/events/<int:service_id>')
+@app.route('/canary/events/<int:service_id>')
 def show_events(service_id):
   cur_page = get_page(request)
   offset = get_offset(cur_page)
@@ -100,7 +100,7 @@ def show_events(service_id):
 
 
 @app.route('/detail/<int:event_id>')
-@app.route('/conureboard/detail/<int:event_id>')
+@app.route('/canary/detail/<int:event_id>')
 def show_detail(event_id):
   #base event query
   event = session.query(models.Event).\

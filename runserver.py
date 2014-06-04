@@ -1,2 +1,2 @@
-from conureboard import app
-app.run(host='0.0.0.0')
+from canary import app
+app.run(host='0.0.0.0',debug=True)

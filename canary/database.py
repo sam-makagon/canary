@@ -6,8 +6,8 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.sql.functions import current_date
 
-from conureboard import app
-from conureboard.config import DB_ENGINE
+from canary import app
+from canary.config import DB_ENGINE
 
 engine = create_engine(DB_ENGINE)
 meta = MetaData(bind=engine)

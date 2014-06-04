@@ -2,7 +2,7 @@ import os
 from ConfigParser import SafeConfigParser,NoOptionError
 basedir = os.path.abspath(os.path.dirname(__file__))
 parser = SafeConfigParser()
-parser.read(os.path.join(basedir, 'conureboard.cfg'))
+parser.read(os.path.join(basedir, 'canary.cfg'))
 
 #SQLAlchemy database connection string
 try:

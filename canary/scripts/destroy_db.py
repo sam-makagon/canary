@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from conureboard.database import meta
+from canary.database import meta
 from sqlalchemy import MetaData
 
 meta.reflect()

@@ -1,7 +1,7 @@
 #!/usr/bin/python
-import conureboard
-from conureboard.database import engine, session
-from conureboard.models import Base, Status
+import canary
+from canary.database import engine, session
+from canary.models import Base, Status
 
 Base.metadata.create_all(engine)
 

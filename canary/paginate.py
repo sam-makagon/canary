@@ -1,6 +1,6 @@
 from __future__ import division
 import math
-from conureboard.config import ITEMS_PER_PAGE
+from canary.config import ITEMS_PER_PAGE
 
 def get_total_pages(record_count):
   return int(math.ceil(record_count / ITEMS_PER_PAGE))

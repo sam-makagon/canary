@@ -11,7 +11,9 @@
 {%- endmacro %}
 
 {% macro truncate(value, length, killwords, hover_orientation) -%}
-  {{ value and value|truncate(length, killwords, '') }}
+  {% if value %}
+    {{ value|truncate(length, killwords, '') }}
+  {% endif %}
   {% if value and value|length > length %}
     <a data-toggle="tooltip" data-placement="{{hover_orientation}}" title="{{value}}">...</a>
   {% endif %}

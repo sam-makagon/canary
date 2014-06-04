@@ -1,4 +1,4 @@
-Conure Board
+Canary
 ------------
 Process status dashboard w/ REST API
 

@@ -25,7 +25,7 @@
         {% for item in items %}
           <tr>
             <td>
-              <a href="/conureboard/services/{{item.id}}"
+              <a href="/canary/events/{{item.id}}"
               {% if item.description == 'SUCCESS' %}
                 <div class="btn btn-success btn-custom">Success</div>
               {% elif item.description == 'WARNING' %}
@@ -37,7 +37,11 @@
               {% endif %}
               </a>
             </td>
-            <td>{{ table.truncate(item.name~' '~item.arguments, process_length, False, 'right') }}</td>
+            <td>
+              {% set td_val = item.name %}
+              {% if item.arguments %}{% set td_val=td_val~' '~item.arguments %}{% endif %}
+              {{ table.truncate(td_val, process_length, False, 'right') }}
+            </td>
             <td>{{ item.host }}</td>
             <td>{{ item.start_date.strftime('%Y-%m-%d %H:%M:%S') if item.start_date and item.start_date != None}}</td>
             <td>{{ item.stop_date.strftime('%Y-%m-%d %H:%M:%S') if item.stop_date and item.stop_date != None }}</td>
