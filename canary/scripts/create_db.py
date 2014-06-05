@@ -1,16 +1,17 @@
 #!/usr/bin/python
 import canary
 from canary.database import engine, session
-from canary.models import Base, Status
+from canary.models import Base, Status, EventDefn
 
 Base.metadata.create_all(engine)
 
-status = Status(1, 'SUCCESS')
-session.add(status)
-status = Status(2, 'WARNING')
-session.add(status)
-status = Status(3, 'ERROR')
-session.add(status)
-status = Status(4, 'RUNNING')
-session.add(status)
+session.add(Status(0, 'SUCCESS'))
+session.add(Status(1, 'WARNING'))
+session.add(Status(2, 'ERROR'))
+session.add(Status(3, 'RUNNING'))
+
+session.add(EventDefn(0, 'START'))
+session.add(EventDefn(1, 'STOP'))
+session.add(EventDefn(2, 'INFO'))
+
 session.commit()

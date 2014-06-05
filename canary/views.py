@@ -1,8 +1,6 @@
-from __future__ import print_function
-import sys
 from flask import render_template, request
 
-from canary import app, models
+from canary import app, models, logmsg
 from canary.database import session, printquery
 from canary.paginate import get_total_pages, get_offset
 from canary.config import ITEMS_PER_PAGE, DEBUG
@@ -16,8 +14,9 @@ def show_services():
   #base services query
   services = session.query(models.Service).\
               join(models.Status).\
-              with_entities(models.Service.id, models.Service.name, models.Service.host, models.Service.status, models.Service.modify_date, models.Service.start_date,\
-                models.Service.stop_date, models.Service.message, models.Service.arguments, models.Status.description )
+              with_entities(models.Service.id, models.Service.name, models.Service.host, models.Service.status,\
+                models.Service.modify_date, models.Service.start_date, models.Service.user,\
+                models.Service.stop_date, models.Service.message, models.Service.arguments, models.Status.status_description )
   
   #apply search
   if request.args.get('search'):
@@ -65,9 +64,11 @@ def show_events(service_id):
   events = session.query(models.Event).\
             join(models.Service).\
             join(models.Status, models.Status.id == models.Event.status).\
+            join(models.EventDefn, models.EventDefn.id == models.Event.event).\
             filter(models.Service.id == service_id).\
-            with_entities( models.Event.id, models.Service.name, models.Status.description, models.Event.status, models.Event.modify_date,\
-              models.Event.message, models.Service.host, models.Event.arguments )
+            with_entities( models.Event.id, models.Service.name, models.Status.status_description, models.Event.status,\
+              models.Event.message, models.Event.user, models.Event.arguments, models.Event.modify_date,\
+              models.Service.host, models.EventDefn.event_description )
   
   #apply search
   if request.args.get('search'):
@@ -107,8 +108,8 @@ def show_detail(event_id):
             join(models.Service).\
             join(models.Status, models.Status.id == models.Event.status).\
             filter(models.Event.id == event_id).\
-            with_entities( models.Service.name, models.Status.description, models.Event.status, models.Event.modify_date,\
-              models.Event.message, models.Service.host, models.Service.arguments )
+            with_entities( models.Service.name, models.Status.status_description, models.Event.status, models.Event.modify_date,\
+              models.Event.message, models.Event.user, models.Event.host, models.Event.arguments )
 
   if DEBUG:
     logmsg(printquery(event))
@@ -127,6 +128,3 @@ def get_page(request):
     page_num = 1
 
   return page_num
-
-def logmsg(msg):
-  print (msg, file=sys.stderr)
