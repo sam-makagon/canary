@@ -98,3 +98,11 @@ body {
   display: inline-block;
   border-radius: 50%;
 }
+
+.tooltip-inner {
+  white-space:pre-wrap;
+  max-width: 800px;
+  /* If max-width does not work, try using width instead */
+  width: 800px; 
+  text-align:left;
+}

@@ -11,4 +11,4 @@ EVENT_INFO  = 2
 def logmsg(msg):
   print (msg, file=sys.stderr)
 
-from canary import database, models, views, api, config
+from canary import database, models, views, api, config, nl2br
