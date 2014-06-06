@@ -22,6 +22,9 @@ def update_service(data=None, **kw):
   elif kw['result']['event'] == EVENT_STOP:
     update['stop_date'] = kw['result']['modify_date']
 
+  if kw['result']['arguments']:
+    update['arguments'] = kw['result']['arguments']
+
   try:
     session.query(models.Service).filter(models.Service.id == kw['result']['parent_id']).update(update)
     session.commit()
