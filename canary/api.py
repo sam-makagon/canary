@@ -14,7 +14,9 @@ def update_service(data=None, **kw):
     logmsg("data=%s, kw=%s" % (data, kw)) 
 
   update = {'status': kw['result']['status']}
-  if kw['result']['message']:
+  update['modify_date'] = kw['result']['modify_date']
+  
+  if kw['result']['message']: 
     update['message'] = kw['result']['message']
   
   if kw['result']['event'] == EVENT_START:
