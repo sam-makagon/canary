@@ -1,6 +1,6 @@
 env
 canary/*.pyc
 .odbc.ini
-flask.log
+flask.log*
 canary/canary.cfg
 canary/app.db

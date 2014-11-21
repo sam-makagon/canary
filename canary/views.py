@@ -68,7 +68,7 @@ def show_events(service_id):
             filter(models.Service.id == service_id).\
             with_entities( models.Event.id, models.Service.name, models.Status.status_description, models.Event.status,\
               models.Event.message, models.Event.user, models.Event.arguments, models.Event.modify_date,\
-              models.Service.host, models.EventDefn.event_description )
+              models.Event.host, models.EventDefn.event_description )
   
   #apply search
   if request.args.get('search'):
